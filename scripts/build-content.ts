@@ -5,7 +5,7 @@ import { validateContent, type ContentFile } from '../src/lib/schema';
 import { readImdbCandidates, readImdbRatings } from './lib/imdb';
 import { IMDB_BASICS, IMDB_RATINGS, OUT_DIR, WORK_DIR } from './lib/paths';
 import { DECADE_QUOTAS, selectByDecade, type Candidate } from './lib/select';
-import { chunk, fetchGenres, fetchMeta, fetchPeople, type WdPeople } from './lib/wikidata';
+import { chunk, fetchGenres, fetchLabels, fetchMeta, fetchPersonLinks, type PersonLinks } from './lib/wikidata';
 import { mapGenreLabels } from './lib/wikidataGenres';
 import type { CoreItemMeta } from './build-core';
 
@@ -13,13 +13,6 @@ const OVERSHOOT = 1.7;
 const MIN_VOTES = 200;
 const CAST_PER_FILM = 6;
 const DIRECTORS_PER_FILM = 3;
-
-const top = <T extends { fame: number; name: string }>(list: T[], n: number): string[] =>
-  [...list]
-    .sort((a, b) => b.fame - a.fame || a.name.localeCompare(b.name))
-    .map((p) => p.name)
-    .filter((name, i, all) => all.indexOf(name) === i)
-    .slice(0, n);
 
 export async function buildContent(): Promise<void> {
   const t0 = Date.now();
@@ -61,33 +54,45 @@ export async function buildContent(): Promise<void> {
   const final = selectByDecade(usable, DECADE_QUOTAS, {});
   log(`usable=${usable.length} final=${final.length}`);
 
-  const people = new Map<number, WdPeople>();
   const finalIds = final.map((c) => c.id);
-  for (const [i, part] of chunk(finalIds, 200).entries()) {
-    for (const [id, p] of await fetchPeople(part)) people.set(id, p);
-    if (i % 5 === 0) log(`people(extras) ${i + 1}/${Math.ceil(finalIds.length / 200)}`);
-  }
-  const corePeople = new Map<number, WdPeople>();
   const coreImdb = coreMeta.map((m) => m.imdb);
-  for (const [i, part] of chunk(coreImdb, 150).entries()) {
-    for (const [id, p] of await fetchPeople(part)) corePeople.set(id, p);
-    if (i % 5 === 0) log(`people(core) ${i + 1}/${Math.ceil(coreImdb.length / 150)}`);
+  const links = new Map<number, PersonLinks>();
+  const allFilms = [...finalIds, ...coreImdb];
+  for (const [i, part] of chunk(allFilms, 100).entries()) {
+    for (const [id, p] of await fetchPersonLinks(part)) links.set(id, p);
+    if (i % 10 === 0) log(`people links ${i + 1}/${Math.ceil(allFilms.length / 100)}`);
   }
 
-  // Person feature vocabulary: only people who appear in at least two films carry matching signal.
-  const df = new Map<string, number>();
-  const feats = (p: WdPeople | undefined): [string[], string[]] =>
-    p ? [top(p.directors, DIRECTORS_PER_FILM), top(p.cast, CAST_PER_FILM)] : [[], []];
-  const bump = (names: string[]) => names.forEach((n) => df.set(n, (df.get(n) ?? 0) + 1));
-  const extraFeats = finalIds.map((id) => feats(people.get(id)));
-  const coreFeats = coreImdb.map((id) => feats(corePeople.get(id)));
-  for (const [d, c] of [...extraFeats, ...coreFeats]) {
-    bump(d);
-    bump(c);
+  // Person feature vocabulary. Only people who appear in at least two catalogue films carry matching
+  // signal; among those, a film keeps its best-connected people (most films in the catalogue, then the
+  // lower, older Wikidata id as a tie-break for fame).
+  const df = new Map<number, number>();
+  for (const l of links.values()) {
+    for (const q of new Set([...l.directors, ...l.cast])) df.set(q, (df.get(q) ?? 0) + 1);
   }
-  const vocab = [...df.entries()].filter(([, n]) => n >= 2).map(([name]) => name).sort((a, b) => a.localeCompare(b));
-  const index = new Map(vocab.map((n, i) => [n, i]));
-  const toIdx = (names: string[]) => names.flatMap((n) => (index.has(n) ? [index.get(n) as number] : []));
+  const best = (qs: number[], n: number): number[] =>
+    [...new Set(qs)]
+      .filter((q) => (df.get(q) ?? 0) >= 2)
+      .sort((a, b) => (df.get(b) as number) - (df.get(a) as number) || a - b)
+      .slice(0, n);
+  const pick = (id: number): [number[], number[]] => {
+    const l = links.get(id);
+    return l ? [best(l.directors, DIRECTORS_PER_FILM), best(l.cast, CAST_PER_FILM)] : [[], []];
+  };
+  const extraFeats = finalIds.map(pick);
+  const coreFeats = coreImdb.map(pick);
+  const survivors = [...new Set([...extraFeats, ...coreFeats].flatMap(([d, c]) => [...d, ...c]))].sort((a, b) => a - b);
+  log(`people surviving pruning: ${survivors.length}`);
+
+  const labels = new Map<number, string>();
+  for (const [i, part] of chunk(survivors, 300).entries()) {
+    for (const [q, name] of await fetchLabels(part)) labels.set(q, name);
+    if (i % 10 === 0) log(`labels ${i + 1}/${Math.ceil(survivors.length / 300)}`);
+  }
+  const vocabQ = survivors.filter((q) => labels.has(q)).sort((a, b) => (labels.get(a) as string).localeCompare(labels.get(b) as string) || a - b);
+  const vocab = vocabQ.map((q) => labels.get(q) as string);
+  const index = new Map(vocabQ.map((q, i) => [q, i]));
+  const toIdx = (qs: number[]) => qs.flatMap((q) => (index.has(q) ? [index.get(q) as number] : []));
 
   const content: ContentFile = {
     v: 1,
@@ -96,7 +101,7 @@ export async function buildContent(): Promise<void> {
     people: vocab,
     items: final.map((c, k) => {
       const r = ratings.get(c.id);
-      const [d, ca] = extraFeats[k] as [string[], string[]];
+      const [d, ca] = extraFeats[k] as [number[], number[]];
       return [
         (meta.get(c.id) as { title: string }).title,
         c.year,

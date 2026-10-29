@@ -110,30 +110,46 @@ SELECT DISTINCT ?imdb ?gl WHERE {
   return out;
 }
 
-export interface WdPeople {
-  directors: { name: string; fame: number }[];
-  cast: { name: string; fame: number }[];
+export interface PersonLinks {
+  /** Wikidata item numbers (Q-ids without the "Q") of the film's directors and cast. */
+  directors: number[];
+  cast: number[];
 }
 
-/** Directors (P57) and cast members (P161) with their sitelink counts as a fame proxy. */
-export async function fetchPeople(ids: readonly number[]): Promise<Map<number, WdPeople>> {
+const qNum = (uri: string): number => Number(uri.slice(uri.lastIndexOf('/') + 2));
+
+/**
+ * Directors (P57) and cast members (P161) as bare Wikidata ids. Labels and fame are deliberately
+ * *not* joined here: those joins time out on the public query service. Labels are fetched
+ * afterwards, only for the few people that survive pruning (see `fetchLabels`).
+ */
+export async function fetchPersonLinks(ids: readonly number[]): Promise<Map<number, PersonLinks>> {
   const rows = await sparql(`
-SELECT DISTINCT ?imdb ?role ?name ?sl WHERE {
+SELECT DISTINCT ?imdb ?role ?p WHERE {
   VALUES ?imdb { ${values(ids)} }
   ?f wdt:P345 ?imdb .
   { ?f wdt:P57 ?p . BIND("d" AS ?role) } UNION { ?f wdt:P161 ?p . BIND("c" AS ?role) }
-  ?p wikibase:sitelinks ?sl .
-  ?p rdfs:label ?name . FILTER(LANG(?name) = "en")
 }`);
-  const out = new Map<number, WdPeople>();
+  const out = new Map<number, PersonLinks>();
   for (const r of rows) {
-    if (!r.imdb || !r.name) continue;
+    if (!r.imdb || !r.p) continue;
     const id = parseTt(r.imdb);
     const entry = out.get(id) ?? { directors: [], cast: [] };
-    const person = { name: r.name, fame: Number(r.sl) || 0 };
-    (r.role === 'd' ? entry.directors : entry.cast).push(person);
+    (r.role === 'd' ? entry.directors : entry.cast).push(qNum(r.p));
     out.set(id, entry);
   }
+  return out;
+}
+
+/** English labels for people, by Wikidata item number. */
+export async function fetchLabels(qids: readonly number[]): Promise<Map<number, string>> {
+  const rows = await sparql(`
+SELECT ?p ?name WHERE {
+  VALUES ?p { ${qids.map((q) => `wd:Q${q}`).join(' ')} }
+  ?p rdfs:label ?name . FILTER(LANG(?name) = "en")
+}`);
+  const out = new Map<number, string>();
+  for (const r of rows) if (r.p && r.name) out.set(qNum(r.p), r.name);
   return out;
 }
 
