@@ -14,7 +14,7 @@ describe('selectByDecade', () => {
 
   it('excludes ids and low-vote titles and ignores decades without a quota', () => {
     const cands = [...make(4, 1955, 1), { id: 99, year: 1850, votes: 9999 }];
-    const out = selectByDecade(cands, { 1950: 10 }, { exclude: new Set([1]), minVotes: 998 });
+    const out = selectByDecade(cands, { 1950: 10 }, { exclude: new Set([1]), minVotes: 999 });
     expect(out.map((c) => c.id)).toEqual([2]);
   });
 

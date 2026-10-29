@@ -38,8 +38,13 @@ export function ResultList({ catalog, recs, onPick }: Props) {
                   </span>
                 </>
               )}
-              <a href={imdbUrl(m.imdbId)} target="_blank" rel="noopener noreferrer">
-                IMDb<span className="visually-hidden"> page for {m.title} (opens in a new tab)</span>
+              <a
+                href={imdbUrl(m.imdbId)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${m.title} on IMDb (opens in a new tab)`}
+              >
+                IMDb
               </a>
             </p>
             <p className="why">
