@@ -81,7 +81,7 @@ export async function buildCore(opts: CoreBuildOptions = {}): Promise<CoreItemMe
   const acc = createAccumulator(picks.length);
   const items: number[] = [];
   const centred: number[] = [];
-  const flush = (u: number) => {
+  const flush = () => {
     if (items.length < 2) return;
     const order = items.map((_, k) => k).sort((a, b) => (items[a] as number) - (items[b] as number));
     addUser(acc, order.map((k) => items[k] as number), order.map((k) => centred[k] as number));
@@ -90,7 +90,7 @@ export async function buildCore(opts: CoreBuildOptions = {}): Promise<CoreItemMe
   let seen = 0;
   await forEachRating(join(ML_DIR, 'ratings.csv'), (u, m, r2) => {
     if (u !== current) {
-      if (current !== -1) flush(current);
+      if (current !== -1) flush();
       items.length = 0;
       centred.length = 0;
       current = u;
@@ -104,7 +104,7 @@ export async function buildCore(opts: CoreBuildOptions = {}): Promise<CoreItemMe
     items.push(idx);
     centred.push((r2 - mean) / 2);
   });
-  if (seen <= maxUsers) flush(current);
+  if (seen <= maxUsers) flush();
   log('pass 2 done; selecting neighbours');
 
   const nn = topNeighbours(acc, {
