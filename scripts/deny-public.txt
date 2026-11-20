@@ -1,0 +1,32 @@
+# Public deny-list for the leak guard (case-insensitive).
+# Hashed so the list itself reveals nothing: h:<len>:<sha256(lowercase)[:16]>
+# hw: is a whole-word match of that length. "re:" lines are regular expressions.
+# Short common words used as film titles are omitted to avoid false positives.
+hw:5:107eaa270bb4d714
+h:5:4af065b70311200e
+h:16:9ab970eb43e4cf7a
+h:15:17b829ab70e093d1
+h:14:9fc1a94968b04958
+h:19:94183ad2a65d90e2
+h:14:e45163aa6f0f0ba8
+h:11:44e2b836c6574b39
+h:14:354c12d2b86f098f
+h:9:0d790741d7294b53
+h:5:e321fb27d066f1f3
+h:5:77ab7ca06297843d
+h:5:f2e6f10732d91b54
+h:5:7b3456545bb9c111
+h:11:23e907f377683313
+h:10:7a0d91593df9293a
+h:12:3dcb4884fa6e50c8
+h:12:4d37107f8cd47a56
+h:10:85b0c4208e2528ea
+h:10:cc28d3a8a658ef35
+h:15:51a4a6e9d1d7742e
+# Secret-shaped strings.
+re:tmdb[_-]?api[_-]?key\s*[:=]
+re:omdb[_-]?api[_-]?key\s*[:=]
+re:\bghp_[A-Za-z0-9]{20,}
+re:\bgho_[A-Za-z0-9]{20,}
+re:\bgithub_pat_[A-Za-z0-9_]{20,}
+re:-----BEGIN (?:RSA |OPENSSH |PRIVATE )

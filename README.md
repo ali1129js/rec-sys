@@ -3,22 +3,27 @@
 A client-side movie recommender. Pick films you like and get recommendations with "because you liked X" explanations.
 No server, no API keys, nothing you pick leaves your browser.
 
+**Live:** https://ali1129js.github.io/rec-sys/
+
 * **Viewer-rating layer**: the 3,000 most-rated films of MovieLens 32M with 30 precomputed neighbours each
   (item-item adjusted cosine, shrinkage, mild popularity damping).
 * **Wider catalogue layer**: 7,032 more titles from the silent era to 2026 (Wikidata, CC0), matched by genre, director,
   cast and era, always labelled **Content-based** in the UI. It is lazy-loaded after the first render.
-* Multi-film selection, genre and decade filters, popular vs hidden-gems, sort options, three themes
-  (light, dark, high contrast), keyboard-accessible combobox search, IMDb ratings with link-out.
+* Multi-film selection, genre and decade filters, popular vs hidden-gems, sort options, gloss themes
+  (Khaki, Graphite default, Midnight plum), a motion toggle (static by default), keyboard-accessible
+  combobox search, typographic poster tiles, and IMDb ratings with a link-out.
 
 ## Commands
 
 ```
 npm install
 npm run dev          # local dev server
-npm test             # 194 tests (Vitest)
+npm test             # 196 tests (Vitest)
 npm run typecheck    # strict TS, noUncheckedIndexedAccess
 npm run build        # typecheck + production build into dist/
 npm run shots        # headless Chrome e2e: screenshots, axe (incl. contrast) for 3 themes x 2 widths
+npm run guard        # leak guard on the working tree
+npm run guard:history
 npm run data:build   # rebuild public/data/*.json (see docs/DATA.md, needs raw downloads)
 ```
 
@@ -64,9 +69,9 @@ npm run data:build   # rebuild public/data/*.json (see docs/DATA.md, needs raw d
 
 ## Docs
 
+* [docs/LEARN.md](docs/LEARN.md): why the rebuild is structured this way
 * [docs/DATA.md](docs/DATA.md): how the data is built and its limits
-* [docs/PUBLISHING.md](docs/PUBLISHING.md): publishing options (nothing is deployed)
-* [docs/github-pages-workflow.yml](docs/github-pages-workflow.yml): Pages workflow, deliberately **not** in `.github/workflows`
+* [docs/PUBLISHING.md](docs/PUBLISHING.md): GitHub Pages notes
 * [NOTICE.md](NOTICE.md): MovieLens citation and non-endorsement, IMDb and Wikidata attribution
 
 ## Known limits
