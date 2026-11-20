@@ -13,12 +13,13 @@ body {
   background: var(--bg);
   color: var(--text);
   font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
 }
 
 .page {
-  max-width: 1000px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 16px 24px 48px;
 }
 
 h1 {
@@ -33,6 +34,10 @@ h2 {
 h3 {
   margin: 0;
   font-size: 1.05rem;
+}
+h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
 }
 
 a {
@@ -83,10 +88,11 @@ a {
   max-width: 46ch;
 }
 
-.panel {
-  background: var(--surface);
+.panel,
+.hero,
+.detail-pane {
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
 }
@@ -118,7 +124,7 @@ input[type='text'],
 select {
   background: var(--bg);
   color: var(--text);
-  border: 2px solid var(--border);
+  border: 2px solid var(--control-border);
   border-radius: 8px;
   padding: 10px 12px;
   min-height: 44px;
@@ -139,8 +145,10 @@ button {
 
 .link-button {
   background: transparent;
+  background-image: none;
   color: var(--link);
   border: 0;
+  box-shadow: none;
   padding: 4px 8px;
   min-height: 32px;
   text-decoration: underline;
@@ -169,6 +177,10 @@ button {
 .search {
   position: relative;
 }
+.hero .search input[type='text'] {
+  min-height: 56px;
+  font-size: 1.1rem;
+}
 .suggestions {
   position: absolute;
   z-index: 5;
@@ -178,10 +190,11 @@ button {
   padding: 0;
   list-style: none;
   background: var(--bg);
-  border: 2px solid var(--border);
+  border: 2px solid var(--control-border);
   border-radius: 8px;
   max-height: 340px;
   overflow: auto;
+  box-shadow: var(--shadow-card);
 }
 .suggestions[hidden] {
   display: none;
@@ -199,12 +212,17 @@ button {
   color: var(--on-accent);
   border-left-color: var(--focus);
 }
+.option.active .option-year,
+.option.active .option-note {
+  color: var(--on-accent);
+}
 .option-title {
   font-weight: 600;
 }
 .option-year,
 .option-note {
   font-size: 0.9rem;
+  color: var(--text-muted);
 }
 .option-note {
   margin-left: auto;
@@ -222,15 +240,14 @@ button {
 .chip {
   background: var(--bg);
   color: var(--text);
-  border: 2px solid var(--border);
+  border: 2px solid var(--control-border);
   border-radius: 999px;
   padding: 4px 12px;
   min-height: 36px;
+  box-shadow: none;
+  background-image: none;
 }
 .chip[aria-pressed='true'] {
-  background: var(--chip-on);
-  color: var(--on-chip-on);
-  border-color: var(--chip-on);
   font-weight: 600;
 }
 .chip[aria-pressed='true']::before {
@@ -248,14 +265,16 @@ button {
   align-items: center;
   gap: 4px;
   background: var(--bg);
-  border: 2px solid var(--border);
+  border: 2px solid var(--control-border);
   border-radius: 999px;
   padding: 2px 4px 2px 12px;
 }
 .pick button {
   background: transparent;
+  background-image: none;
   color: var(--text);
   border: 0;
+  box-shadow: none;
   border-radius: 999px;
   min-height: 32px;
   min-width: 32px;
@@ -276,7 +295,7 @@ button {
 
 .segmented {
   display: inline-flex;
-  border: 2px solid var(--border);
+  border: 2px solid var(--control-border);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -291,11 +310,9 @@ button {
   color: var(--text);
 }
 .seg + .seg {
-  border-left: 2px solid var(--border);
+  border-left: 2px solid var(--control-border);
 }
 .seg.on {
-  background: var(--chip-on);
-  color: var(--on-chip-on);
   font-weight: 600;
 }
 .seg input {
@@ -314,20 +331,37 @@ button {
   margin: 12px 0;
   padding: 0;
   display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 .card {
-  background: var(--bg);
+  position: relative;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.card-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
 }
 .card-head {
   display: flex;
   justify-content: space-between;
   gap: 8px;
   align-items: flex-start;
+}
+.results.poster-grid .card-head,
+.results.shelf-track .card-head {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 .year {
   font-weight: 400;
@@ -352,15 +386,160 @@ button {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 999px;
-  border: 1px solid currentColor;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-gloss);
 }
 .badge-content {
-  background: var(--badge-bg);
+  background-color: var(--badge-bg);
+  background-image: linear-gradient(to bottom, var(--saffron-from), var(--saffron-to));
   color: var(--on-badge);
+  border-color: var(--saffron-to);
 }
 .badge-cf {
-  background: var(--badge-cf-bg);
+  background-color: var(--badge-cf-bg);
+  background-image: linear-gradient(to bottom, var(--jade-from), var(--jade-to));
   color: var(--on-badge-cf);
+  border-color: var(--jade-to);
+}
+
+.poster-art {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  display: grid;
+  place-items: center;
+  background-color: var(--tone);
+  background-image: linear-gradient(to bottom, var(--tone-from), var(--tone-to));
+  color: var(--tone-on);
+  box-shadow: var(--shadow-gloss);
+  overflow: hidden;
+}
+.poster-art::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 45%;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.32), transparent);
+  pointer-events: none;
+}
+.poster-letter {
+  font-size: 5.2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  z-index: 1;
+}
+.poster-year {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1;
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.card.list-row {
+  flex-direction: row;
+  align-items: stretch;
+  cursor: pointer;
+  padding: 0;
+}
+.card.list-row .poster-art {
+  flex: 0 0 72px;
+  aspect-ratio: auto;
+  min-height: 108px;
+}
+.card.list-row .poster-letter {
+  font-size: 2rem;
+}
+.card.list-row .card-body {
+  flex: 1;
+}
+.card.list-row[aria-current='true'] {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
+.results.list {
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 0;
+}
+
+.shell {
+  display: block;
+}
+.layout-sidebar .shell {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) minmax(280px, 340px);
+  gap: 16px;
+  align-items: start;
+}
+.layout-sidebar .sidebar,
+.layout-sidebar .detail-pane {
+  position: sticky;
+  top: 12px;
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+}
+.layout-sidebar .sidebar .panel,
+.layout-sidebar .detail-pane {
+  margin-bottom: 12px;
+}
+.layout-sidebar main {
+  min-width: 0;
+}
+.detail-title {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+.detail-pane .poster-art {
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.detail-pane .poster-letter {
+  font-size: 4rem;
+}
+
+.layout-hero .hero {
+  padding: 28px 28px 24px;
+  margin-bottom: 16px;
+}
+.layout-hero .hero h2 {
+  margin-bottom: 16px;
+}
+
+.shelf {
+  margin: 16px 0 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+.shelf-title {
+  margin: 0 0 8px;
+}
+.shelf-track,
+.results.shelf-track {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 4px 4px 12px;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+}
+.shelf-track .card {
+  flex: 0 0 200px;
+  scroll-snap-align: start;
+}
+.layout-rows .panel,
+.layout-rows main,
+.layout-rows .page {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .footer {
@@ -369,6 +548,9 @@ button {
   padding-top: 16px;
   color: var(--text-muted);
   font-size: 0.9rem;
+}
+.layout-sidebar .footer {
+  grid-column: 1 / -1;
 }
 .footer h2 {
   font-size: 1rem;
@@ -381,6 +563,24 @@ button {
   font-size: 0.85rem;
 }
 
+.proposal-note {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+@media (max-width: 960px) {
+  .layout-sidebar .shell {
+    grid-template-columns: 1fr;
+  }
+  .layout-sidebar .sidebar,
+  .layout-sidebar .detail-pane {
+    position: static;
+    max-height: none;
+  }
+}
+
 @media (max-width: 520px) {
   h1 {
     font-size: 1.6rem;
@@ -389,7 +589,11 @@ button {
     padding: 12px;
   }
   .results {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .layout-hero .hero {
+    padding: 16px;
   }
   .row > * {
     flex: 1 1 100%;
@@ -404,11 +608,21 @@ button {
   .seg {
     flex: 1 1 auto;
   }
+  .shelf-track .card {
+    flex-basis: 160px;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   button,
-  .chip {
-    transition: background-color 0.12s;
+  .chip,
+  .card {
+    transition: background-color 0.12s, box-shadow 0.12s;
   }
+}
+
+html[data-motion='static'] button,
+html[data-motion='static'] .chip,
+html[data-motion='static'] .card {
+  transition: none;
 }

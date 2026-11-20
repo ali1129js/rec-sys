@@ -14,3 +14,8 @@ export function contrastRatio(a: string, b: string): number {
   const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x) as [number, number];
   return (hi + 0.05) / (lo + 0.05);
 }
+
+/** WCAG contrast rounded to two decimals, matching the other gloss apps. */
+export function contrastMeets(a: string, b: string, min: number): boolean {
+  return Number(contrastRatio(a, b).toFixed(2)) >= min;
+}

@@ -12,7 +12,7 @@ import { chromium, type Page } from 'playwright-core';
 const OUT = process.env.SHOTS_DIR ?? '/workspace/projects/recsys-shots';
 const DIST = join(process.cwd(), 'dist');
 const CHROME = process.env.CHROME_PATH ?? '/usr/bin/google-chrome';
-const THEMES = ['light', 'dark', 'contrast'] as const;
+const THEMES = ['khaki', 'graphite', 'midnight'] as const;
 const VIEWPORTS = [
   { name: '1280', width: 1280, height: 900 },
   { name: '390', width: 390, height: 844 },
@@ -118,7 +118,7 @@ async function main(): Promise<void> {
     // The headline screenshots: one recommendation with its explanations, light theme.
     for (const vp of VIEWPORTS) {
       const context = await browser.newContext({ viewport: { width: vp.width, height: vp.height } });
-      await context.addInitScript(`localStorage.setItem('rec-sys-theme', 'light')`);
+      await context.addInitScript(`localStorage.setItem('rec-sys-theme', 'khaki')`);
       const page = await context.newPage();
       await page.goto(server.url);
       await page.waitForFunction(() => !document.body.innerText.includes('Loading the wider'), null, { timeout: 30_000 });

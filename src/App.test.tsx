@@ -148,11 +148,32 @@ describe('App', () => {
 
   it('switches theme and persists it', async () => {
     const { user } = await setup();
-    await user.click(screen.getByRole('radio', { name: 'High contrast' }));
-    expect(document.documentElement.dataset.theme).toBe('contrast');
-    expect(window.localStorage.getItem('rec-sys-theme')).toBe('contrast');
-    await user.click(screen.getByRole('radio', { name: 'Dark' }));
-    expect(document.documentElement.dataset.theme).toBe('dark');
+    await user.click(screen.getByRole('radio', { name: 'Midnight plum' }));
+    expect(document.documentElement.dataset.theme).toBe('midnight');
+    expect(window.localStorage.getItem('rec-sys-theme')).toBe('midnight');
+    await user.click(screen.getByRole('radio', { name: 'Graphite' }));
+    expect(document.documentElement.dataset.theme).toBe('graphite');
+  });
+
+  it('toggles motion and persists it; play icon when static', async () => {
+    const { user } = await setup();
+    const toggle = screen.getByRole('button', { name: 'Play background animation' });
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    expect(document.documentElement.dataset.motion).toBe('static');
+    await user.click(toggle);
+    expect(document.documentElement.dataset.motion).toBe('animated');
+    expect(window.localStorage.getItem('rec-sys-motion')).toBe('animated');
+    expect(screen.getByRole('button', { name: 'Stop background animation' })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('keeps recommendations working after switching to the sidebar and rows layouts', async () => {
+    const { user, box } = await setup();
+    await pick(user, box, 'Toy Story');
+    await user.click(screen.getByRole('radio', { name: 'Sidebar' }));
+    expect(await screen.findByRole('heading', { name: /Toy Story 2/ })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Details' })).toBeInTheDocument();
+    await user.click(screen.getByRole('radio', { name: 'Genre rows' }));
+    expect(await screen.findByRole('heading', { name: /Toy Story 2/ })).toBeInTheDocument();
   });
 });
 

@@ -2,7 +2,12 @@ import '@testing-library/jest-dom/vitest';
 import { afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  window.localStorage?.clear();
+  delete document.documentElement.dataset.theme;
+  delete document.documentElement.dataset.motion;
+});
 
 // jsdom lacks a few browser APIs the app touches.
 if (typeof window !== 'undefined') {
