@@ -15,7 +15,7 @@
     "shots": "tsx e2e/shots.ts",
     "shots:final": "tsx e2e/final-shots.ts",
     "guard": "node scripts/leak-guard.mjs . --exclude package-lock.json",
-    "guard:history": "git log -p --all -- . \":(exclude)package-lock.json\" \":(exclude)yarn.lock\" | node scripts/leak-guard.mjs --stdin"
+    "guard:history": "git log -p --pretty=format: --all -- . \":(exclude)package-lock.json\" \":(exclude)yarn.lock\" | node scripts/leak-guard.mjs --stdin"
   },
   "dependencies": {
     "react": "^19.3.1",
