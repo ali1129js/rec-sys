@@ -13,7 +13,7 @@
     "test:watch": "vitest",
     "data:build": "tsx scripts/build-data.ts",
     "shots": "tsx e2e/shots.ts",
-    "shots:proposals": "tsx e2e/proposal-shots.ts"
+    "shots:final": "tsx e2e/final-shots.ts"
   },
   "dependencies": {
     "react": "^19.3.1",

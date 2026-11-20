@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="khaki" data-motion="static">
+<html lang="en" data-theme="graphite" data-motion="static">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,7 +15,7 @@
           if (t === 'dark' || t === 'darkgrey') t = 'graphite';
           if (t === 'contrast') t = 'midnight';
           if (t !== 'khaki' && t !== 'graphite' && t !== 'midnight') {
-            t = matchMedia('(prefers-color-scheme: dark)').matches ? 'graphite' : 'khaki';
+            t = 'graphite';
           }
           document.documentElement.dataset.theme = t;
           var m = localStorage.getItem('rec-sys-motion');

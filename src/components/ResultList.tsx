@@ -3,45 +3,23 @@ import type { Recommendation } from '../lib/recommender';
 import { imdbUrl, type Catalog } from '../lib/types';
 import { PosterArt } from './PosterArt';
 
-export type ResultVariant = 'poster' | 'list';
-
 interface Props {
   catalog: Catalog;
   recs: readonly Recommendation[];
   onPick: (index: number) => void;
-  variant?: ResultVariant;
-  selectedIndex?: number | null;
-  onSelect?: (index: number) => void;
-  className?: string;
 }
 
 const votesLabel = (v: number): string =>
   v >= 1_000_000 ? `${(v / 1_000_000).toFixed(1)}M` : v >= 1000 ? `${Math.round(v / 1000)}K` : String(v);
 
-export function ResultList({
-  catalog,
-  recs,
-  onPick,
-  variant = 'poster',
-  selectedIndex = null,
-  onSelect,
-  className,
-}: Props) {
-  const listClass = ['results', variant === 'list' ? 'list' : 'poster-grid', className].filter(Boolean).join(' ');
+export function ResultList({ catalog, recs, onPick }: Props) {
   return (
-    <ol className={listClass}>
+    <ol className="results poster-grid">
       {recs.map((rec) => {
         const m = rec.movie;
         const why = explain(catalog, rec);
-        const current = variant === 'list' && selectedIndex === m.index;
         return (
-          <li
-            key={m.index}
-            className={variant === 'list' ? 'card list-row' : 'card'}
-            data-kind={rec.kind}
-            aria-current={current ? 'true' : undefined}
-            onClick={onSelect ? () => onSelect(m.index) : undefined}
-          >
+          <li key={m.index} className="card" data-kind={rec.kind}>
             <PosterArt title={m.title} year={m.year} />
             <div className="card-body">
               <div className="card-head">

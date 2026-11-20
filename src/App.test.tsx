@@ -166,14 +166,11 @@ describe('App', () => {
     expect(screen.getByRole('button', { name: 'Stop background animation' })).toHaveAttribute('aria-pressed', 'true');
   });
 
-  it('keeps recommendations working after switching to the sidebar and rows layouts', async () => {
-    const { user, box } = await setup();
-    await pick(user, box, 'Toy Story');
-    await user.click(screen.getByRole('radio', { name: 'Sidebar' }));
-    expect(await screen.findByRole('heading', { name: /Toy Story 2/ })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Details' })).toBeInTheDocument();
-    await user.click(screen.getByRole('radio', { name: 'Genre rows' }));
-    expect(await screen.findByRole('heading', { name: /Toy Story 2/ })).toBeInTheDocument();
+  it('defaults to Graphite when no theme is stored', async () => {
+    await setup();
+    expect(document.documentElement.dataset.theme).toBe('graphite');
+    expect(screen.queryByRole('radio', { name: 'Sidebar' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('radio', { name: 'Genre rows' })).not.toBeInTheDocument();
   });
 });
 

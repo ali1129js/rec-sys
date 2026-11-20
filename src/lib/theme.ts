@@ -25,7 +25,7 @@ export function initialTheme(): Theme {
   } catch {
     /* storage blocked */
   }
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'graphite' : 'khaki';
+  return 'graphite';
 }
 
 export function applyTheme(theme: Theme): void {
