@@ -63,6 +63,17 @@ describe('App', () => {
     expect(within(card as HTMLElement).getByText('Ratings (MovieLens)')).toBeInTheDocument();
   });
 
+  it('adds a recommended film from its card button', async () => {
+    const { user, box } = await setup();
+    await pick(user, box, 'Toy Story');
+    const card = (await screen.findByRole('heading', { name: /Toy Story 2/ })).closest('li') as HTMLElement;
+    const add = within(card).getByRole('button', { name: 'Add Toy Story 2 to my picks' });
+    expect(add).toHaveTextContent('Add to my picks');
+    await user.click(add);
+    expect(screen.getByRole('list', { name: /Your picks/ })).toHaveTextContent('Toy Story 2 (1999)');
+  });
+
+
   it('combines several picks and marks content-based results as such', async () => {
     const { user, box } = await setup();
     await pick(user, box, 'Heat');

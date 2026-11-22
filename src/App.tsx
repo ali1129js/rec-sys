@@ -60,12 +60,19 @@ function ResultsBlock({
 }: {
   catalog: Catalog;
   result: ReturnType<typeof recommend>;
-  state: { limit: number };
-  dispatch: (a: { type: 'pick'; index: number } | { type: 'more' }) => void;
+  state: { limit: number; picks: readonly number[] };
+  dispatch: (a: { type: 'pick'; index: number } | { type: 'unpick'; index: number } | { type: 'more' }) => void;
 }) {
   const total = result.collaborative.length + result.content.length;
+  const picked = new Set(state.picks);
   const renderList = (recs: readonly Recommendation[]) => (
-    <ResultList catalog={catalog} recs={recs} onPick={(i) => dispatch({ type: 'pick', index: i })} />
+    <ResultList
+      catalog={catalog}
+      recs={recs}
+      picked={picked}
+      onPick={(i) => dispatch({ type: 'pick', index: i })}
+      onUnpick={(i) => dispatch({ type: 'unpick', index: i })}
+    />
   );
 
   return (

@@ -153,6 +153,20 @@ button {
   text-decoration: underline;
 }
 
+.pick-toggle {
+  margin-top: 8px;
+  align-self: flex-start;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 14px;
+}
+button.pick-toggle[aria-pressed='true'] {
+  background-color: var(--badge-content-bg);
+  background-image: linear-gradient(to bottom, var(--jade-from), var(--jade-to));
+  color: var(--on-badge-content);
+  border-color: var(--jade-to);
+}
+
 .hint {
   color: var(--text-muted);
   margin: 8px 0;

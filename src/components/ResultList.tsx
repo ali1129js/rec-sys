@@ -6,13 +6,15 @@ import { PosterArt } from './PosterArt';
 interface Props {
   catalog: Catalog;
   recs: readonly Recommendation[];
+  picked: ReadonlySet<number>;
   onPick: (index: number) => void;
+  onUnpick: (index: number) => void;
 }
 
 const votesLabel = (v: number): string =>
   v >= 1_000_000 ? `${(v / 1_000_000).toFixed(1)}M` : v >= 1000 ? `${Math.round(v / 1000)}K` : String(v);
 
-export function ResultList({ catalog, recs, onPick }: Props) {
+export function ResultList({ catalog, recs, picked, onPick, onUnpick }: Props) {
   return (
     <ol className="results poster-grid">
       {recs.map((rec) => {
@@ -53,8 +55,14 @@ export function ResultList({ catalog, recs, onPick }: Props) {
               <p className="why">
                 <strong>{why.headline}.</strong> {why.detail}
               </p>
-              <button type="button" className="link-button" onClick={() => onPick(m.index)}>
-                Add {m.title} to my picks
+              <button
+                type="button"
+                className="pick-toggle"
+                aria-pressed={picked.has(m.index)}
+                aria-label={`Add ${m.title} to my picks`}
+                onClick={() => (picked.has(m.index) ? onUnpick(m.index) : onPick(m.index))}
+              >
+                {picked.has(m.index) ? 'Added' : 'Add to my picks'}
               </button>
             </div>
           </li>
