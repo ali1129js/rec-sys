@@ -19,7 +19,7 @@ export function ResultList({ catalog, recs, onPick }: Props) {
         const m = rec.movie;
         const why = explain(catalog, rec);
         return (
-          <li key={m.index} className="card" data-kind={rec.kind}>
+          <li key={m.index} className={rec.kind === 'content' ? 'card card-content' : 'card card-cf'} data-kind={rec.kind}>
             <PosterArt title={m.title} year={m.year} />
             <div className="card-body">
               <div className="card-head">
@@ -27,7 +27,7 @@ export function ResultList({ catalog, recs, onPick }: Props) {
                   {m.title} <span className="year">({m.year})</span>
                 </h3>
                 <span className={rec.kind === 'content' ? 'badge badge-content' : 'badge badge-cf'}>
-                  {rec.kind === 'content' ? 'Content-based' : 'Viewer ratings'}
+                  {rec.kind === 'content' ? 'Content-based' : 'Ratings (MovieLens)'}
                 </span>
               </div>
               <p className="meta">

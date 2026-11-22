@@ -76,13 +76,13 @@ function ResultsBlock({
         </p>
       )}
       {result.collaborative.length > 0 && (
-        <section aria-labelledby="cf-h">
+        <section className="results-section results-section-cf" aria-labelledby="cf-h">
           <h3 id="cf-h">From viewer ratings (MovieLens)</h3>
           {renderList(result.collaborative)}
         </section>
       )}
       {result.content.length > 0 && (
-        <section aria-labelledby="content-h">
+        <section className="results-section results-section-content" aria-labelledby="content-h">
           <h3 id="content-h">From the wider catalogue (content-based)</h3>
           <p className="hint">
             Matched on genre, director, cast and era, not on what viewers rated. Useful for older and newer films

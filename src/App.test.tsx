@@ -60,7 +60,7 @@ describe('App', () => {
     const card = (await screen.findByRole('heading', { name: /Toy Story 2/ })).closest('li');
     expect(card).not.toBeNull();
     expect(within(card as HTMLElement).getByText(/Because you liked Toy Story\./)).toBeInTheDocument();
-    expect(within(card as HTMLElement).getByText('Viewer ratings')).toBeInTheDocument();
+    expect(within(card as HTMLElement).getByText('Ratings (MovieLens)')).toBeInTheDocument();
   });
 
   it('combines several picks and marks content-based results as such', async () => {
@@ -73,6 +73,28 @@ describe('App', () => {
     expect(within(section).getByRole('heading', { name: /Ronin/ })).toBeInTheDocument();
     expect(within(section).getAllByText('Content-based').length).toBeGreaterThan(0);
     expect(within(section).getByText(/not viewer ratings/)).toBeInTheDocument();
+  });
+
+  it('gives each result card a type label and a typed section style', async () => {
+    const { user, box } = await setup();
+    await pick(user, box, 'Heat');
+    await pick(user, box, 'Se7en');
+    const cf = screen.getByRole('heading', { name: /From viewer ratings/ }).closest('section') as HTMLElement;
+    expect(cf).toHaveClass('results-section-cf');
+    for (const card of within(cf).getAllByRole('listitem')) {
+      expect(within(card).getByText('Ratings (MovieLens)')).toBeInTheDocument();
+      expect(card).toHaveAttribute('data-kind', 'collaborative');
+      expect(card).toHaveClass('card-cf');
+    }
+    const content = (await screen.findByRole('heading', { name: /content-based/i, level: 3 })).closest(
+      'section',
+    ) as HTMLElement;
+    expect(content).toHaveClass('results-section-content');
+    for (const card of within(content).getAllByRole('listitem')) {
+      expect(within(card).getByText('Content-based')).toBeInTheDocument();
+      expect(card).toHaveAttribute('data-kind', 'content');
+      expect(card).toHaveClass('card-content');
+    }
   });
 
   it('removing a pick updates the list; clear all empties it', async () => {

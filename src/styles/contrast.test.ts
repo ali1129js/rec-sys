@@ -22,14 +22,25 @@ const themes = parseThemes();
 const TEXT_PAIRS: [string, string][] = [
   ['text', 'bg'],
   ['text', 'surface'],
+  ['text', 'section-cf-bg'],
+  ['text', 'section-content-bg'],
+  ['text', 'card-cf-bg'],
+  ['text', 'card-content-bg'],
   ['text-muted', 'bg'],
   ['text-muted', 'surface'],
+  ['text-muted', 'section-cf-bg'],
+  ['text-muted', 'section-content-bg'],
+  ['text-muted', 'card-cf-bg'],
+  ['text-muted', 'card-content-bg'],
   ['link', 'bg'],
   ['link', 'surface'],
+  ['link', 'card-cf-bg'],
+  ['link', 'card-content-bg'],
   ['on-accent', 'accent'],
   ['on-chip-on', 'chip-on'],
   ['on-badge', 'badge-bg'],
   ['on-badge-cf', 'badge-cf-bg'],
+  ['on-badge-content', 'badge-content-bg'],
   ['danger', 'bg'],
   ['danger', 'surface'],
 ];
@@ -40,6 +51,10 @@ const UI_PAIRS: [string, string][] = [
   ['control-border', 'surface'],
   ['focus', 'bg'],
   ['focus', 'surface'],
+  ['card-cf-border', 'card-cf-bg'],
+  ['card-cf-border', 'section-cf-bg'],
+  ['card-content-border', 'card-content-bg'],
+  ['card-content-border', 'section-content-bg'],
 ];
 
 const FILLS: [string, string][] = [

@@ -388,16 +388,43 @@ button {
   box-shadow: var(--shadow-gloss);
 }
 .badge-content {
-  background-color: var(--badge-bg);
-  background-image: linear-gradient(to bottom, var(--saffron-from), var(--saffron-to));
-  color: var(--on-badge);
-  border-color: var(--saffron-to);
+  background-color: var(--badge-content-bg);
+  background-image: linear-gradient(to bottom, var(--jade-from), var(--jade-to));
+  color: var(--on-badge-content);
+  border-color: var(--jade-to);
 }
 .badge-cf {
   background-color: var(--badge-cf-bg);
-  background-image: linear-gradient(to bottom, var(--jade-from), var(--jade-to));
+  background-image: linear-gradient(to bottom, var(--cobalt-from), var(--cobalt-to));
   color: var(--on-badge-cf);
-  border-color: var(--jade-to);
+  border-color: var(--cobalt-to);
+}
+
+.results-section {
+  margin: 16px 0;
+  padding: 16px 16px 8px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+}
+.results-section-cf {
+  background-color: var(--section-cf-bg);
+  border-color: var(--card-cf-border);
+}
+.results-section-content {
+  background-color: var(--section-content-bg);
+  border-color: var(--card-content-border);
+}
+.results-section-cf .card,
+.card-cf {
+  background-color: var(--card-cf-bg);
+  border-color: var(--card-cf-border);
+  border-left-width: 6px;
+}
+.results-section-content .card,
+.card-content {
+  background-color: var(--card-content-bg);
+  border-color: var(--card-content-border);
+  border-left-width: 6px;
 }
 
 .poster-art {

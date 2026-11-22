@@ -75,8 +75,16 @@
   --on-chip-on: #ffffff;
   --badge-bg: #ffb000;
   --on-badge: #111111;
-  --badge-cf-bg: #00b386;
-  --on-badge-cf: #111111;
+  --badge-cf-bg: #2f6bff;
+  --on-badge-cf: #ffffff;
+  --badge-content-bg: #00b386;
+  --on-badge-content: #111111;
+  --section-cf-bg: #c4c1b8;
+  --section-content-bg: #becaa9;
+  --card-cf-bg: #cdd1d8;
+  --card-content-bg: #c5dcc4;
+  --card-cf-border: #2350bf;
+  --card-content-border: #007457;
   --danger: #9f2235;
   --shadow-card:
     inset 0 1px 0 rgb(255 255 255 / 0.55), 0 1px 2px rgb(42 36 24 / 0.08),
@@ -101,8 +109,16 @@
   --on-chip-on: #ffffff;
   --badge-bg: #ffb000;
   --on-badge: #111111;
-  --badge-cf-bg: #00b386;
-  --on-badge-cf: #111111;
+  --badge-cf-bg: #2f6bff;
+  --on-badge-cf: #ffffff;
+  --badge-content-bg: #00b386;
+  --on-badge-content: #111111;
+  --section-cf-bg: #202c43;
+  --section-content-bg: #1a3434;
+  --card-cf-bg: #2b3a5a;
+  --card-content-bg: #234646;
+  --card-cf-border: #4e81ff;
+  --card-content-border: #26be98;
   --danger: #e9929f;
   --shadow-card:
     inset 0 1px 0 rgb(255 255 255 / 0.1), 0 1px 2px rgb(0 0 0 / 0.4),
@@ -127,8 +143,16 @@
   --on-chip-on: #ffffff;
   --badge-bg: #ffb000;
   --on-badge: #111111;
-  --badge-cf-bg: #00b386;
-  --on-badge-cf: #111111;
+  --badge-cf-bg: #2f6bff;
+  --on-badge-cf: #ffffff;
+  --badge-content-bg: #00b386;
+  --on-badge-content: #111111;
+  --section-cf-bg: #1d1e42;
+  --section-content-bg: #182733;
+  --card-cf-bg: #2b2e58;
+  --card-content-bg: #233944;
+  --card-cf-border: #4e81ff;
+  --card-content-border: #26be98;
   --danger: #e78c9a;
   --shadow-card:
     inset 0 1px 0 rgb(255 255 255 / 0.1), 0 1px 2px rgb(0 0 0 / 0.45),
